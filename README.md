@@ -4,13 +4,13 @@
 
 This repo contains the components of a MEAN application which demonstrates the
 use and power of both MongoDB and Mongoose. It's purpose is to be a guide
-showing how to build applications from simple MongoDB-only appliations up to
+showing how to build applications from simple MongoDB-only applications up to
 more complex, real-world applications that leverage the power of Mongoose.
 
 ##A Little Historical Context
 
 Databases fall into several different categories. The earliest databases, up
-through the mid-1980's, were so-called "CODASYL databases" which organized data
+through the mid-1980's, were so-called *CODASYL databases* which organized data
 into records and related record occurrances of one type to another using
 hashes to form a network. Although generally efficient CODASYL-style databases,
 like IDMS from Cullinet Software and IMS from IBM required applications to
@@ -23,7 +23,7 @@ individual and connect them with individual Transaction records representing
 activity against it.
 
 An example of how an application accesses the records for this type of
-replationship in a CODASYL database is:
+relationship in a CODASYL database is:
 
 ```
     Move account number '111111' to the Account Record layout
