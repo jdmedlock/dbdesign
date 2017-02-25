@@ -20,29 +20,43 @@ const mongoClient = mongodb.MongoClient;
 
 // Route - Display the application home page.
 //         http://localhost:3000/
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', function(request, response, next) {
+  response.render('index', {
+    title: 'Express'
+  });
 });
 
 // Route - Retrieve all database rows using Mongo.
 //         http://localhost:3000/
-router.get('/mongo/findall', function(req, res, next) {
-});
+router.get('/mongo/findall', function(request, response, next) {});
 
 // Route - Retrieve all database rows using Mongoose.
 //         http://localhost:3000/
-router.get('/mongoose/findall', function(req, res, next) {
-});
+router.get('/mongoose/findall', function(request, response, next) {});
 
 // Route - Populate the database. If it already contains data clear it
 //         before reloading.
 //         http://localhost:3000/
-router.get('/populatedb', function(req, res, next) {
-  console.log("Enterd /populatedb...");
-  const dbRecords = [
-    {"account_no" : 111111, "owner_fname" : "John", "owner_mi" : "Q", "owner_lname" : "Public"},
-    {"account_no" : 111112, "owner_fname" : "Jane", "owner_mi" : "I", "owner_lname" : "Thrify"},
-    {"account_no" : 111113, "owner_fname" : "Roger", "owner_mi" : "A", "owner_lname" : "Johnsen"}
+router.get('/populatedb', function(request, response, next) {
+  console.log("Entered /populatedb...");
+  const dbRecords = [{
+      "account_no": 111111,
+      "owner_fname": "John",
+      "owner_mi": "Q",
+      "owner_lname": "Public"
+    },
+    {
+      "account_no": 111112,
+      "owner_fname": "Jane",
+      "owner_mi": "I",
+      "owner_lname": "Thrify"
+    },
+    {
+      "account_no": 111113,
+      "owner_fname": "Roger",
+      "owner_mi": "A",
+      "owner_lname": "Johnsen"
+    }
   ];
   mongoClient.connect(mongoUri)
     .then((db) => {
@@ -51,9 +65,24 @@ router.get('/populatedb', function(req, res, next) {
       const urlDocument = collection.count()
         .then((count) => {
           console.log("count: ", count);
+          dbRecords.forEach((element) => {
+            console.log("element to be inserted: ",element);
+            collection.insert([element])
+              .then((writeResult) => {
+                response.json({
+                  error: writeResult
+                });
+              })
+              .catch((error) => {
+                response.json({
+                  error: "Error inserting URL in database. Error: " +
+                    error
+                });
+              });
+          });
         })
         .catch((error) => {
-          console.log("TBD");
+          console.log("Error retrieving count of accounts. Error: ", error);
         });
     })
     .catch((error) => {
