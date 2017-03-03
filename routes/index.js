@@ -1,4 +1,4 @@
-// File name: server.js
+// File name: index.js
 // Date: 01/29/2017
 // Programmer: Jim Medlock
 //
@@ -8,11 +8,15 @@
 const config = require("../config");
 const express = require("express");
 const mongodb = require("mongodb");
+const path = require("path");
+
 const router = express.Router();
 
 // Establish a mongo connection using settings from the config.js file
 const mongoUri = "mongodb://" + config.db.host + "/" + config.db.name;
 const mongoClient = mongodb.MongoClient;
+
+console.log("Entered index.js");
 
 // -------------------------------------------------------------
 // Express Route Definitions
@@ -26,18 +30,10 @@ router.get('/', function(request, response, next) {
   });
 });
 
-// Route - Retrieve all database rows using Mongo.
-//         http://localhost:3000/
-router.get('/mongo/findall', function(request, response, next) {});
-
-// Route - Retrieve all database rows using Mongoose.
-//         http://localhost:3000/
-router.get('/mongoose/findall', function(request, response, next) {});
-
 // Route - Populate the database. If it already contains data clear it
 //         before reloading.
-//         http://localhost:3000/
-router.get('/populatedb', function(request, response, next) {
+//         http://localhost:3000/populatedb
+router.get('/populatedb/', function(request, response, next) {
   console.log("Entered /populatedb...");
   const dbRecords = [{
       "account_no": 111111,
@@ -66,7 +62,7 @@ router.get('/populatedb', function(request, response, next) {
         .then((count) => {
           console.log("count: ", count);
           dbRecords.forEach((element) => {
-            console.log("element to be inserted: ",element);
+            console.log("element to be inserted: ", element);
             collection.insert([element])
               .then((writeResult) => {
                 response.json({
@@ -90,5 +86,30 @@ router.get('/populatedb', function(request, response, next) {
         error);
     });
 });
+
+// Route - Retrieve all database rows using Mongo.
+//         http://localhost:3000/mongo/findall
+router.get('/mongo/findall', function(request, response, next) {
+  mongoClient.connect(mongoUri)
+    .then((db) => {
+      console.log("Successfully connected to MongoDB");
+      const collection = db.collection("accounts");
+      const urlDocument = collection.count()
+        .then((count) => {
+          console.log("count: ", count);
+        })
+        .catch((error) => {
+          console.log("Error retrieving accounts using native Mongo. Error: ", error);
+        });
+    })
+    .catch((error) => {
+      console.log("Unable to establish connection to MongoDB",
+        error);
+    });
+});
+
+// Route - Retrieve all database rows using Mongoose.
+//         http://localhost:3000/mongoose/findall
+router.get('/mongoose/findall', function(request, response, next) {});
 
 module.exports = router;
