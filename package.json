@@ -3,7 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+<<<<<<< HEAD
     "start": "nodemon ./bin/www"
+=======
+    "start": "node ./bin/www",
+    "startup": "nodemon app"
+>>>>>>> 6b5eb2d884b0bd662169cb805808177ee6d4975c
   },
   "dependencies": {
     "body-parser": "~1.16.0",

@@ -9,11 +9,15 @@
 const config = require("../config");
 const express = require("express");
 const mongodb = require("mongodb");
+const path = require("path");
+
 const router = express.Router();
 
 // Establish a mongo connection using settings from the config.js file
 const mongoUri = "mongodb://" + config.db.host + "/" + config.db.name;
 const mongoClient = mongodb.MongoClient;
+
+console.log("Entered index.js");
 
 // -------------------------------------------------------------
 // Express Route Definitions
