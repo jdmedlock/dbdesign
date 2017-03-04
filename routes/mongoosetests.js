@@ -1,9 +1,8 @@
-// File name: index.js
-// Date: 01/29/2017
+// File name: mongoosetests.js
+// Date: 03/04/2017
 // Programmer: Jim Medlock
 //
-// Primary route for the DbDesign app. This route is responsible for
-// displayiing an overview and usage instructions.
+// Routes supporting Mongoose tests
 
 "use strict";
 const config = require("../config");
@@ -19,12 +18,10 @@ const mongoClient = mongodb.MongoClient;
 // Express Route Definitions
 // -------------------------------------------------------------
 
-// Route - Display the application home page.
-//         http://localhost:3000/
-router.get('/', function(request, response, next) {
-  response.render('index', {
-    title: 'Express'
-  });
+// Route - Retrieve all database rows using Mongoose.
+//         http://localhost:3000/mongoose/findall
+router.get('/findall', function(request, response, next) {
+  console.log("Entered /mongoose/findall...");
 });
 
 module.exports = router;

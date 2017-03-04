@@ -1,14 +1,14 @@
-// File name: index.js
-// Date: 01/29/2017
+// File name: mongotests.js
+// Date: 03/04/2017
 // Programmer: Jim Medlock
 //
-// Primary route for the DbDesign app. This route is responsible for
-// displayiing an overview and usage instructions.
+// Routes containing native Mongo tests.
 
 "use strict";
 const config = require("../config");
 const express = require("express");
 const mongodb = require("mongodb");
+
 const router = express.Router();
 
 // Establish a mongo connection using settings from the config.js file
@@ -19,12 +19,14 @@ const mongoClient = mongodb.MongoClient;
 // Express Route Definitions
 // -------------------------------------------------------------
 
-// Route - Display the application home page.
-//         http://localhost:3000/
-router.get('/', function(request, response, next) {
-  response.render('index', {
-    title: 'Express'
+// Route - Retrieve all database rows using Mongo.
+//         http://localhost:3000/mongo/findall
+router.get('/findall', function(request, response, next) {
+  console.log("Entered /mongo/findall...");
+  response.json({
+    error: "Invoked /mongo/findall route."
   });
+
 });
 
 module.exports = router;
