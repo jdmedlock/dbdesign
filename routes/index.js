@@ -26,9 +26,7 @@ console.log("Entered index.js");
 // Route - Display the application home page.
 //         http://localhost:3000/
 router.get('/', function(request, response, next) {
-  response.render('index', {
-    title: 'Express'
-  });
+  response.sendFile(path.join(__dirname + "/../views/index.html"));
 });
 
 module.exports = router;

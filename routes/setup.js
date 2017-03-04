@@ -56,12 +56,16 @@ router.get('/populatedb', function(request, response, next) {
                 response.json({
                   error: writeResult
                 });
+                response.send();
               })
               .catch((error) => {
                 response.json({
                   error: "Error inserting URL in database. Error: " +
                     error
                 });
+                if (err) {
+    return res.send();
+}
               });
           });
         })

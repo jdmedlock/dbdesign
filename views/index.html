@@ -1,0 +1,64 @@
+<!--
+File Name: index.html
+Date: 03/04/2017
+Programmer: Jim Medlock
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="author" content="Jim Medlock">
+    <meta name="subject" content="Timestamp Microservice">
+    <meta name="datecreated" content="20170122">
+    <meta name="datereviewed" content="20170122">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DBDesign - Mongo &amp; Mongoose Demonstration</title>
+
+    <!-- ALL CSS GOES IN THE META HEAD SECTION -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css" integrity="sha256-uHu2MAd1LvCOVEAhvMld4LpJi7dUGS7GVzvG/5B3hlo=" crossorigin="anonymous" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+</head>
+
+<body>
+   <!-- Main webpage body -->
+   <div class="container-fluid">
+      <h1>DBDesign - Mongo &amp; Mongoose Demonstration</h1>
+      <h3>Overview</h3>
+      <p>DBDesign demonstrates the basic functionality provided by the MongoDB
+        database and then duplicates it to allow the native Mongo code to be
+        compared and contrasted to comparable Mongoose code.</p>
+      <p>This is implemented as a series of Express routes which implements an
+        API supporting the setup and reinialization of the Mongo database and
+        test data.</p>
+      <h3>API</h3>
+      <ul>
+        <li>Setup - http://localhost:3000/setup/populatedb
+          <p>If the Accounts database delete and reload all test data. If the
+            database doesn't exist then define it and load test data.</p>
+        </li>
+        <li>Mongo Tests
+          <ol>
+            <li> findall - http://localhost:3000/mongo/findall
+              <p>Retrieve and list all records using native Mongo calls.
+            </li>
+          </ol>
+        </li>
+        <li>Mongoose Tests
+          <ol>
+            <li> findall - http://localhost:3000/mongoose/findall
+              <p>Retrieve and list all records using Mongoose.
+            </li>
+          </ol>
+        </li>
+      </ul>
+   </div> <!-- end main webpage body -->
+
+   <!-- ALL JAVASCRIPT LINKS GOES RIGHT BEFORE THE ENDING BODY TAG -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+
+</html>
