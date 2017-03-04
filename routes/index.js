@@ -30,10 +30,35 @@ router.get('/', function(request, response, next) {
   });
 });
 
+// Route - Retrieve all database rows using Mongo.
+//         http://localhost:3000/mongo/findall
+router.get('/mongo/findall', function(request, response, next) {
+  mongoClient.connect(mongoUri)
+    .then((db) => {
+      console.log("Successfully connected to MongoDB");
+      const collection = db.collection("accounts");
+      const urlDocument = collection.count()
+        .then((count) => {
+          console.log("count: ", count);
+        })
+        .catch((error) => {
+          console.log("Error retrieving accounts using native Mongo. Error: ", error);
+        });
+    })
+    .catch((error) => {
+      console.log("Unable to establish connection to MongoDB",
+        error);
+    });
+});
+
+// Route - Retrieve all database rows using Mongoose.
+//         http://localhost:3000/mongoose/findall
+router.get('/mongoose/findall', function(request, response, next) {});
+
 // Route - Populate the database. If it already contains data clear it
 //         before reloading.
-//         http://localhost:3000/populatedb
-router.get('/populatedb/', function(request, response, next) {
+//         http://localhost:3000/setup/populatedb
+router.get('/setup/populatedb/', function(request, response, next) {
   console.log("Entered /populatedb...");
   const dbRecords = [{
       "account_no": 111111,
@@ -54,6 +79,7 @@ router.get('/populatedb/', function(request, response, next) {
       "owner_lname": "Johnsen"
     }
   ];
+  
   mongoClient.connect(mongoUri)
     .then((db) => {
       console.log("Successfully connected to MongoDB");
@@ -86,30 +112,5 @@ router.get('/populatedb/', function(request, response, next) {
         error);
     });
 });
-
-// Route - Retrieve all database rows using Mongo.
-//         http://localhost:3000/mongo/findall
-router.get('/mongo/findall', function(request, response, next) {
-  mongoClient.connect(mongoUri)
-    .then((db) => {
-      console.log("Successfully connected to MongoDB");
-      const collection = db.collection("accounts");
-      const urlDocument = collection.count()
-        .then((count) => {
-          console.log("count: ", count);
-        })
-        .catch((error) => {
-          console.log("Error retrieving accounts using native Mongo. Error: ", error);
-        });
-    })
-    .catch((error) => {
-      console.log("Unable to establish connection to MongoDB",
-        error);
-    });
-});
-
-// Route - Retrieve all database rows using Mongoose.
-//         http://localhost:3000/mongoose/findall
-router.get('/mongoose/findall', function(request, response, next) {});
 
 module.exports = router;
