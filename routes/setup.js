@@ -42,6 +42,7 @@ router.get('/populatedb', function(request, response, next) {
       "owner_lname": "Johnsen"
     }
   ];
+  let results = [];
   mongoClient.connect(mongoUri)
     .then((db) => {
       console.log("Successfully connected to MongoDB");
@@ -53,19 +54,18 @@ router.get('/populatedb', function(request, response, next) {
             console.log("element to be inserted: ", element);
             collection.insert([element])
               .then((writeResult) => {
+                /*
                 response.json({
                   error: writeResult
                 });
-                response.send();
+                */
+                results.push(writeResult);
               })
               .catch((error) => {
                 response.json({
                   error: "Error inserting URL in database. Error: " +
                     error
                 });
-                if (err) {
-    return res.send();
-}
               });
           });
         })
