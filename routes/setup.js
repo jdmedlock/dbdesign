@@ -41,32 +41,49 @@ router.get('/populatedb', (request, response) => {
   }];
   mongoClient.connect(mongoUri)
     .then((db) => {
+      response.writeHead(200, { 'Content-Type': 'text/html' });
       response.write('\nSuccessfully connected to MongoDB');
       const collection = db.collection('accounts');
       collection.count()
         .then((count) => {
           response.write(`count: ${count}`);
-          dbRecords.forEach((element) => {
-            collection.insert([element])
-              .then((WriteResult) => {
-                response.write('\nRecord successfully inserted.');
-                response.end();
-              })
-              .catch((error) => {
-                response.json({
-                  error: `\nError inserting URL in database. Error: ${error}`,
-                });
-                response.end();
+          if (count > 0) {
+            collection.remove({})
+            .then((WriteResult) => {
+              response.write('\nRecords successfully removed. ', WriteResult.nRemoved);
+              dbRecords.forEach((element) => {
+                collection.insert([element])
+                  .then((WriteResult) => {
+                    response.write('\nRecord successfully inserted.');
+                  })
+                  .catch((error) => {
+                    response.writeHead(400);
+                    response.json({
+                      error: `\nError inserting URL in database. Error: ${error}`,
+                    });
+                    response.end();
+                  });
               });
-          });
+            })
+            .catch((error) => {
+              response.writeHead(400);
+              response.json({
+                error: `\nError deleting records database. Error: ${error}`,
+              });
+              response.end();
+            });
+          }
         })
         .catch((error) => {
+          response.writeHead(400);
           response.write(`\nError retrieving count of accounts. Error: ${error}`);
           response.end();
         });
     })
     .catch((error) => {
-      response.write('\nUnable to establish connection to MongoDB', error);
+      response.writeHead(400);
+      response.write(`\nUnable to establish connection to MongoDB. Error: ${error}`);
+      response.write(`\nMongoUri: ${mongoUri}`);
       response.end();
     });
 });
