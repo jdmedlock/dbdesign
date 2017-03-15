@@ -22,7 +22,8 @@ const mongoClient = mongodb.MongoClient;
 //         before reloading.
 //         http://localhost:3000/setup/populatedb
 router.get('/populatedb', (request, response) => {
-  response.write('Entered /populatedb...');
+  response.writeHead(200, { 'Content-Type': 'text/html' });
+  response.write('<p>Entered /populatedb...</p>');
   const dbRecords = [{
     account_no: 111111,
     owner_fname: 'John',
@@ -41,51 +42,71 @@ router.get('/populatedb', (request, response) => {
   }];
   mongoClient.connect(mongoUri)
     .then((db) => {
-      response.writeHead(200, { 'Content-Type': 'text/html' });
-      response.write('\nSuccessfully connected to MongoDB');
+      response.write('<p>Successfully connected to MongoDB</p>');
+      console.log('Successfully connected to MongoDB');
       const collection = db.collection('accounts');
       collection.count()
         .then((count) => {
+          /*
           response.write(`count: ${count}`);
+          */
+          console.log(`count: ${count}`);
           if (count > 0) {
             collection.remove({})
-            .then((WriteResult) => {
+            .then((removeResult) => {
+              /*
               response.write('\nRecords successfully removed. ', WriteResult.nRemoved);
+              */
+              console.log('Records successfully removed. ', removeResult.nRemoved);
               dbRecords.forEach((element) => {
                 collection.insert([element])
-                  .then((WriteResult) => {
+                  .then((insertResult) => {
+                    /*
                     response.write('\nRecord successfully inserted.');
+                    */
+                    console.log(`Record successfully inserted. ${insertResult.nInserted}`);
                   })
                   .catch((error) => {
+                    /*
                     response.writeHead(400);
                     response.json({
                       error: `\nError inserting URL in database. Error: ${error}`,
                     });
                     response.end();
+                    */
+                    console.log(`Error inserting URL in database. Error: ${error}`);
                   });
               });
             })
             .catch((error) => {
+              /*
               response.writeHead(400);
               response.json({
                 error: `\nError deleting records database. Error: ${error}`,
               });
               response.end();
+              */
+              console.log(`Error deleting records database. Error: ${error}`);
             });
           }
         })
         .catch((error) => {
+          /*
           response.writeHead(400);
           response.write(`\nError retrieving count of accounts. Error: ${error}`);
           response.end();
+          */
+          console.log(`Error retrieving count of accounts. Error: ${error}`);
         });
     })
     .catch((error) => {
-      response.writeHead(400);
+      response.writeHead(400, {'Content-Type': 'text/plain'});
       response.write(`\nUnable to establish connection to MongoDB. Error: ${error}`);
       response.write(`\nMongoUri: ${mongoUri}`);
-      response.end();
+      console.log(`\nUnable to establish connection to MongoDB. Error: ${error}`);
+      console.log(`\nMongoUri: ${mongoUri}`);
     });
+  response.end();
 });
 
 module.exports = router;
