@@ -26,12 +26,18 @@ class HtmlLog {
   // Prefix each log entry with the current date and time.
   // Returns: N/a
   addEntry(logEntry) {
-    const timestamp = moment().format('MM/DD/YY HH:mm:ss.SSS');
-    this.logEntries.push(`<li>${timestamp}: ${logEntry}</li>`);
+    console.log(`${this.createTimestamp()} addEntry logEntry:${logEntry}`);
+    this.logEntries.push(`<li>${this.createTimestamp()}: ${logEntry}</li>`);
+  }
+  // Generate a timestamp for the current point in timestamp
+  // Returns: String containing the timestamp
+  createTimestamp() {
+    return moment().format('MM/DD/YY HH:mm:ss.SSS');
   }
   // Write the log to the response object as an HTML list.
   // Returns: N/a
   writeLog(emitType, response) {
+    console.log(`${this.createTimestamp()} writeLog emitType:${emitType}`);
     if (emitType === 'normal') {
       response.writeHead(200, { 'Content-Type': 'text/html' });
       this.addEntry('Database successfully initialized and loaded.');
@@ -40,31 +46,11 @@ class HtmlLog {
       this.addEntry('Database initialization and loading failed.');
     }
     const html = this.logEntries.join(' ');
-    console.log(`html: ${html}`);
+    console.log(`${this.createTimestamp()} html: ${html}`);
     response.write(`<body><div><ul>${html}</ul></div></body>`);
     response.write('End of log');
     response.end();
   }
-}
-
-// -------------------------------------------------------------
-// Functions used in Promise .then and .catch calls
-// -------------------------------------------------------------
-function removeOldDBData(collection, log, count) {
-  log.addEntry(`count: ${count}`);
-  console.log(`current count: ${count}`);
-  return collection.remove({});
-}
-
-function insertTestData(testData, collection, log, removeResult) {
-  log.addEntry(`Records successfully removed. ${removeResult}`);
-  console.log(`Records successfully removed. ${removeResult}`);
-  return collection.insertMany(testData);
-}
-
-function insertComplete(log, insertResult) {
-  log.addEntry('Record successfully inserted.');
-  console.log(`Record successfully inserted. ${insertResult}`);
 }
 
 // -------------------------------------------------------------
@@ -99,9 +85,21 @@ router.get('/populatedb', (request, response) => {
     console.log('Successfully connected to MongoDB');
     const collection = db.collection('accounts');
     collection.count()
-    .then(removeOldDBData.bind(null, collection, log))
-    .then(insertTestData.bind(null, testData, collection, log))
-    .then(insertComplete.bind(null, log));
+    .then((count) => {
+      log.addEntry(`count: ${count}`);
+      console.log(`current count: ${count}`);
+      return collection.remove({});
+    })
+    .then((removeResult) => {
+      log.addEntry(`Records successfully removed. ${removeResult}`);
+      console.log(`Records successfully removed. ${removeResult}`);
+      return collection.insertMany(testData);
+    })
+    .then((insertResult) => {
+      log.addEntry('Record successfully inserted.');
+      console.log(`Record successfully inserted. ${insertResult}`);
+      log.writeLog('normal', response);
+    });
   })
   .catch((error) => {
     log.addEntry(`Unable to establish connection to MongoDB. Error: ${error}`);
@@ -110,8 +108,6 @@ router.get('/populatedb', (request, response) => {
     console.log(`Unable to establish connection to MongoDB. Error: ${error}`);
     console.log(`MongoUri: ${mongoUri}`);
   });
-  // Write the log entries to the HTML page
-  log.writeLog('normal', response);
 });
 
 module.exports = router;
