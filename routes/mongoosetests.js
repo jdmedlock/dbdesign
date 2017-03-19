@@ -6,13 +6,11 @@
 
 const config = require('../config');
 const express = require('express');
-const mongodb = require('mongodb');
-
+const mongoose = require('mongoose');
 const router = express.Router();
 
 // Establish a mongo connection using settings from the config.js file
 const mongoUri = `mongodb://${config.db.host}/${config.db.name}`;
-const mongoClient = mongodb.MongoClient;
 
 // -------------------------------------------------------------
 // Express Route Definitions
@@ -21,7 +19,9 @@ const mongoClient = mongodb.MongoClient;
 // Route - Retrieve all database rows using Mongoose.
 //         http://localhost:3000/mongoose/findall
 router.get('/findall', (request, response) => {
-  console.log('Entered /mongoose/findall...');
+  const hlog = require('../util/htmllog');
+  log.addEntry('Entered /mongoose/findall...');
+  mongoose.connect(mongoUri)
 });
 
 module.exports = router;

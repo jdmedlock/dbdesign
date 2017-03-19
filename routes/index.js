@@ -22,7 +22,7 @@ const mongoClient = mongodb.MongoClient;
 
 // Route - Display the application home page.
 //         http://localhost:3000/
-router.get('/', function(request, response, next) {
+router.get('/', (request, response, next)  => {
   response.sendFile(path.join(`${__dirname}/../views/index.html`));
 });
 
