@@ -34,8 +34,10 @@ class HtmlLog {
   writeLog(emitType, response) {
     if (emitType === 'normal') {
       response.writeHead(200, { 'Content-Type': 'text/html' });
+      this.addEntry('Database successfully initialized and loaded.');
     } else {
       response.writeHead(400, { 'Content-Type': 'text/html' });
+      this.addEntry('Database initialization and loading failed.');
     }
     const html = this.logEntries.join(' ');
     console.log(`html: ${html}`);
@@ -45,7 +47,25 @@ class HtmlLog {
   }
 }
 
-const log = new HtmlLog();
+// -------------------------------------------------------------
+// Functions used in Promise .then and .catch calls
+// -------------------------------------------------------------
+function removeOldDBData(collection, log, count) {
+  log.addEntry(`count: ${count}`);
+  console.log(`current count: ${count}`);
+  return collection.remove({});
+}
+
+function insertTestData(testData, collection, log, removeResult) {
+  log.addEntry(`Records successfully removed. ${removeResult}`);
+  console.log(`Records successfully removed. ${removeResult}`);
+  return collection.insertMany(testData);
+}
+
+function insertComplete(log, insertResult) {
+  log.addEntry('Record successfully inserted.');
+  console.log(`Record successfully inserted. ${insertResult}`);
+}
 
 // -------------------------------------------------------------
 // Express Route Definitions
@@ -55,8 +75,9 @@ const log = new HtmlLog();
 //         before reloading.
 //         http://localhost:3000/setup/populatedb
 router.get('/populatedb', (request, response) => {
+  let log = new HtmlLog();
   log.addEntry('Entered /populatedb...');
-  const dbRecords = [{
+  const testData = [{
     account_no: 111111,
     owner_fname: 'John',
     owner_mi: 'Q',
@@ -77,24 +98,10 @@ router.get('/populatedb', (request, response) => {
     log.addEntry('Successfully connected to MongoDB');
     console.log('Successfully connected to MongoDB');
     const collection = db.collection('accounts');
-    // If the database already contains records then delete them before
-    // adding a new set of test data.
     collection.count()
-    .then((count) => {
-      log.addEntry(`count: ${count}`);
-      console.log(`count: ${count}`);
-      return collection.remove({});
-    })
-    .then((removeResult) => {
-      log.addEntry(`Records successfully removed. ${removeResult}`);
-      console.log(`Records successfully removed. ${removeResult}`);
-      // Add a new set of test data to the database
-      collection.insertMany(dbRecords)
-      .then((insertResult) => {
-        log.addEntry('Record successfully inserted.');
-        console.log(`Record successfully inserted. ${insertResult.nInserted}`);
-      });
-    });
+    .then(removeOldDBData.bind(null, collection, log))
+    .then(insertTestData.bind(null, testData, collection, log))
+    .then(insertComplete.bind(null, log));
   })
   .catch((error) => {
     log.addEntry(`Unable to establish connection to MongoDB. Error: ${error}`);
