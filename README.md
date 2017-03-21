@@ -13,8 +13,14 @@ Databases fall into several different categories. The earliest databases, up
 through the mid-1980's, were so-called *CODASYL databases* which organized data
 into records and related record occurrances of one type to another using
 hashes to form a network. Although generally efficient CODASYL-style databases,
-like IDMS from Cullinet Software and IMS from IBM required applications to
-understand and navigate this physical relationship between records.
+like IDMS from Cullinet Software and IMS from IBM, the context and navigation 
+required that the application bet exposed to the physical relationship between 
+records. 
+
+This had the impact of increasing the complexity of applications. In
+addition, the embedded dependency of the physical database schema into the
+application meant that database changes required extensive application 
+modification and testing.
 
 For example, a common relationship is that of a parent and child where a
 parent record occurrance owns one or more occurrances of child records. This
@@ -22,14 +28,15 @@ type of relationship is used to maintain Savings Account records for an
 individual and connect them with individual Transaction records representing
 activity against it.
 
-An example of how an application accesses the records for this type of
-relationship in a CODASYL database is:
+The following seudo-code shows  how an application accesses the records for 
+this type of relationship in a CODASYL database, in this case CA-IDMS:
 
 ```
-    Move account number '111111' to the Account Record layout
-    Get Account record
+    INITIALIZE ACCOUNT
+    Move account number '111111' to the Account field in record
+    OBTAIN CALC ACCOUNT
     Do-Forever
-      Get next Transaction in Account-Transaction
+      OBTAIN NEXT Transaction WITHIN Account-Transaction
       If no more Transaction records then break
       If transaction-type = 'deposit'
         then

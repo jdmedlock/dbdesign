@@ -24,21 +24,29 @@ const mongoClient = mongodb.MongoClient;
 router.get('/findall', (request, response) => {
   const log = new hlog.HtmlLog();
   let accountsDb = null;
+  let collection = null;
   log.addEntry('Entered /mongo/findall...');
   mongoClient.connect(mongoUri)
   .then((db) => {
     accountsDb = db;
+    collection = accountsDb.collection('accounts');
     log.addEntry('Successfully connected to MongoDB');
-    const collection = accountsDb.collection('accounts');
-    return collection.find();
+    return collection.count();
+  })
+  .then((count) => {
+    log.addEntry(`Existing record count: ${count}`);
+     return collection.find();
   })
   .then((cursor) => {
-    cursor.each((error, item) => {
-      if (item == null) {
+    cursor.each((error, anAccount) => {
+      if (anAccount == null) {
         log.writeLog('normal', response);
         return;
       }
-      log.addEntry(`Item: account_no:${item.account_no} owner_fname:${item.owner_fname} owner_mi:${item.owner_mi} owner_lname:${item.owner_lname}`);
+      log.addEntry(`Account: account_no:${anAccount.account_no} 
+        owner_fname:${anAccount.owner_fname} 
+        owner_mi:${anAccount.owner_mi} 
+        owner_lname:${anAccount.owner_lname}`);
     });
   })
   .catch((error) => {
