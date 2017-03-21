@@ -31,17 +31,23 @@ router.get('/populatedb', (request, response) => {
     owner_fname: 'John',
     owner_mi: 'Q',
     owner_lname: 'Public',
+    created_on: new Date(),
+    updated_on: new Date(),
   }, {
     account_no: 111112,
     owner_fname: 'Jane',
     owner_mi: 'I',
     owner_lname: 'Thrify',
+    created_on: new Date(),
+    updated_on: new Date(),
   }, {
     account_no: 111114,
     owner_fname: 'Roger',
     owner_mi: 'A',
     owner_lname: 'Johnsen',
-  }];
+    created_on: new Date(),
+    updated_on: new Date(),
+ }];
   mongoClient.connect(mongoUri)
   .then((db) => {
     log.addEntry('Successfully connected to MongoDB');
@@ -58,6 +64,10 @@ router.get('/populatedb', (request, response) => {
     .then((insertResult) => {
       log.addEntry(`Record successfully inserted. ${insertResult}`);
       log.writeLog('normal', response);
+    })
+    .catch((error) => {
+      log.addEntry(`Error initializing and reloading test data. Error:${error}`);
+      log.writeLog('error', response);
     });
   })
   .catch((error) => {
