@@ -25,6 +25,8 @@ const mongoClient = mongodb.MongoClient;
 //         http://localhost:3000/setup/populatedb
 router.get('/populatedb', (request, response) => {
   const log = new hlog.HtmlLog();
+  log.addEntry('<h2>Initialize and Populate Test Database</h2>');
+  log.addEntry('<h3>Execution Log:</h3>');
   log.addEntry('Entered /populatedb...');
   const testData = [{
     account_no: 111111,

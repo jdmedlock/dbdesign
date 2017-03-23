@@ -14,10 +14,16 @@ class HtmlLog {
     this.logEntries = [];
   }
   // Add a new entry to the running log of program events.
-  // Prefix each log entry with the current date and time.
+  // Prefix each log entry with the current date and time. If the
+  // logEntry contains a <h2> or an <h3> HTML tag suppress adding the 
+  // timestamp to the log entry.
   // Returns: N/a
   addEntry(logEntry) {
-    this.logEntries.push(`<li>${this.createTimestamp()}: ${logEntry}</li>`);
+    if (logEntry.indexOf('<h2>') >= 0 || logEntry.indexOf('<h3>') >= 0 ) {
+      this.logEntries.push(`${logEntry}`);
+    } else {
+      this.logEntries.push(`<li>${this.createTimestamp()}: ${logEntry}</li>`);
+    }
   }
   // Generate a timestamp for the current point in timestamp
   // Returns: String containing the timestamp
@@ -37,6 +43,7 @@ class HtmlLog {
     const html = this.logEntries.join(' ');
     response.write(`<body><div><ul>${html}</ul></div></body>`);
     response.write('End of log');
+    response.write('<p><a href="http://localhost:3000">Back to main page</a></p>');
     response.end();
   }
 }

@@ -22,6 +22,8 @@ const mongoUri = `mongodb://${config.db.host}/${config.db.name}`;
 //         http://localhost:3000/mongoose/findall
 router.get('/findall', (request, response) => {
   const log = new hlog.HtmlLog();
+  log.addEntry('<h2>Mongoose Test</h2>');
+  log.addEntry('<h3>Execution Log:</h3>');
   log.addEntry('Entered /mongoose/findall...');
   mongoose.Promise = global.Promise;
   mongoose.connect(mongoUri)

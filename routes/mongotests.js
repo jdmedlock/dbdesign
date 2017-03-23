@@ -25,6 +25,8 @@ router.get('/findall', (request, response) => {
   const log = new hlog.HtmlLog();
   let accountsDb = null;
   let collection = null;
+  log.addEntry('<h2>Mongo Test</h2>');
+  log.addEntry('<h3>Execution Log:</h3>');
   log.addEntry('Entered /mongo/findall...');
   mongoClient.connect(mongoUri)
   .then((db) => {
