@@ -32,14 +32,15 @@ class HtmlLog {
   }
   // Write the log to the response object as an HTML list.
   // Returns: N/a
-  writeLog(emitType, response) {
+  writeLog(emitType, response, logEntry) {
+    let logMessage = '';
+    logMessage = logEntry !== null ? logEntry : '';
     if (emitType === 'normal') {
       response.writeHead(200, { 'Content-Type': 'text/html' });
-      this.addEntry('Database successfully initialized and loaded.');
     } else {
       response.writeHead(400, { 'Content-Type': 'text/html' });
-      this.addEntry('Database initialization and loading failed.');
     }
+    this.addEntry(logMessage);
     const html = this.logEntries.join(' ');
     response.write(`<body><div><ul>${html}</ul></div></body>`);
     response.write('End of log');

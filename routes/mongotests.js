@@ -42,7 +42,7 @@ router.get('/findall', (request, response) => {
   .then((cursor) => {
     cursor.each((error, anAccount) => {
       if (anAccount == null) {
-        log.writeLog('normal', response);
+        log.writeLog('normal', response, 'Findall test successfully completed.');
         return;
       }
       log.addEntry(`Account: account_no:${anAccount.account_no} 
@@ -81,7 +81,7 @@ router.get('/findquery', (request, response) => {
   .then((cursor) => {
     cursor.each((error, anAccount) => {
       if (anAccount == null) {
-        log.writeLog('normal', response);
+        log.writeLog('normal', response, 'Findquery test successfully completed');
         return;
       }
       log.addEntry(`Account: account_no:${anAccount.account_no} 

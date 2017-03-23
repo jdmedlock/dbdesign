@@ -38,7 +38,7 @@ router.get('/findall', (request, response) => {
           owner_lname:${anAccount.owner_lname}`);
       });
       mongoose.disconnect();
-      log.writeLog('normal',response);
+      log.writeLog('normal',response, 'Findall test successfully completed');
     })
     .catch((error) => {
       log.addEntry(`Error encountered retrieving all accounts. Error: ${error}`);

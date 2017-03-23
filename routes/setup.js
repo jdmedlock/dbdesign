@@ -65,7 +65,7 @@ router.get('/populatedb', (request, response) => {
     })
     .then((insertResult) => {
       log.addEntry(`Record successfully inserted. ${insertResult}`);
-      log.writeLog('normal', response);
+      log.writeLog('normal', response, 'Database successfully initialized and loaded');
     })
     .catch((error) => {
       log.addEntry(`Error initializing and reloading test data. Error:${error}`);
