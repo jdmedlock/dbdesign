@@ -1,21 +1,24 @@
-#DBDesign - Adventures in MongoDB & Mongoose
+# DBDesign - Adventures in MongoDB & Mongoose
 
-##Overview
+## Overview
 
-This repo contains the components of a MEAN application which demonstrates the
-use and power of both MongoDB and Mongoose. It's purpose is to be a guide
-showing how to build applications from simple MongoDB-only applications up to
-more complex, real-world applications that leverage the power of Mongoose.
+This repo contains the components of a MongoDB/Express/NodeJS application 
+which demonstrates the use and power of both MongoDB and Mongoose. It's purpose 
+is to be a guide showing how to build applications from simple MongoDB-only 
+applications up to more complex, real-world applications that leverage the 
+power of Mongoose.
 
-##A Little Historical Context
+## A Little Historical Context
 
 Databases fall into several different categories. The earliest databases, up
-through the mid-1980's, were so-called *CODASYL databases* which organized data
+through the mid-1980's, were so-called [CODASYL](https://en.wikipedia.org/wiki/CODASYL) 
+databases which organized data
 into records and related record occurrances of one type to another using
 hashes to form a network. Although generally efficient CODASYL-style databases,
-like IDMS from Cullinet Software and IMS from IBM, the context and navigation 
-required that the application bet exposed to the physical relationship between 
-records. 
+like [IDMS](https://en.wikipedia.org/wiki/IDMS) from Cullinet Software and 
+[IMS](https://en.wikipedia.org/wiki/IBM_Information_Management_System) from IBM, 
+the context and navigation required that the application bet exposed to the 
+physical relationship between records. 
 
 This had the impact of increasing the complexity of applications. In
 addition, the embedded dependency of the physical database schema into the
@@ -45,8 +48,9 @@ this type of relationship in a CODASYL database, in this case CA-IDMS:
     End-Do
 ```
 
-In the early 1980's a new type of database based on the Structured Query
-Language (SQL) begain too take hold. The main advantage of a SQL database had
+In the early 1980's a new type of database based on the [Structured Query
+Language (SQL)](https://en.wikipedia.org/wiki/SQL) begain to take hold. 
+The main advantage of a SQL database had
 over a CODASYL database is that manipulating data was simpler since data
 in a SQL database is organized relationally rather than physically. This
 meant that application programs became simpler to write and maintain.
@@ -72,13 +76,15 @@ was the fact that applications needed to be able to quickly adapt to new
 requirements and to scale to support transactional volumes which far exceeded
 what was seen in older mainframe and distributed computing environments.
 
-NoSQL database were developed to provide an environment that supported change
-without requiring radical reengineering of the underlying data model, high
-volumes of data, and an architecture that was easy to scale.
+[NoSQL](https://en.wikipedia.org/wiki/NoSQL) database were developed to provide 
+an environment that supported change without requiring radical reengineering 
+of the underlying data model, high volumes of data, and an architecture that 
+was easy to scale.
 
-##What is MongoDB?
+## What is MongoDB?
 
-MongoDB is a Open Source, NoSQL database management system that supports:
+[MongoDB](https://www.mongodb.com/) is a Open Source, NoSQL database management 
+system that supports:
 
 - Ad hoc queries
 - Indexing
@@ -89,7 +95,9 @@ MongoDB is a Open Source, NoSQL database management system that supports:
 - Capped collections
 
 MongoDB is a *document-based* database management system which leverages a
-JSON-style storage format known as *binary JSON*, or BSON, to achieve high
+[JSON](https://en.wikipedia.org/wiki/JSON)-style storage format known as 
+*binary JSON*, or [BSON](https://en.wikipedia.org/wiki/BSON), 
+to achieve high
 throughput. BSON makes it easy for applications to extract and manipulate data,
 as well as allowing properties to be efficiently indexed, mapped, and nested
 in support of complex query operations and experssions.
@@ -104,13 +112,25 @@ For example, using the Account example above all Transactions for account
     })
 ```
 
-##What is Mongoose?
+## What is Mongoose?
 
 MongooseJS is an *Object Document Mapper (ODM)* that makes MongoDB easier to
 use from Javascript applications by translating documents in a MongoDB database
-to objects in the program. Rather than describing what this means let's
-demonstrate it though a few examples.
+to objects in the program. Mongoose uses schemas to model the data an application
+wishes to store and manipulate in MongoDb. This includes features such as 
+type casting, validation, query building, and more.
 
-###A Simple MongoDB-only Application
+The schema describes the attributes of the properties (aka fields) the application will 
+manipulate. These attributes include such things as:
 
-###A Simple Mongoose Equivalent Application
+- Data type (e.g. String, Number, etc.).
+- Whether or not it is required or optional.
+- Is it's value unique, meaning that the database is allowed to contain only one document with that value in that property.
+
+A model is constructed from the schema and each class defines a document the application 
+will be operating on. In other words, a models is a classesclass that defines a document 
+with the properties and behaviors as declared in our schema.
+
+### A Simple MongoDB-only Application
+
+### A Simple Mongoose Equivalent Application
