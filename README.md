@@ -112,6 +112,8 @@ For example, using the Account example above all Transactions for account
     })
 ```
 
+### A Simple MongoDB-only Application
+
 ## What is Mongoose?
 
 MongooseJS is an *Object Document Mapper (ODM)* that makes MongoDB easier to
@@ -127,10 +129,75 @@ manipulate. These attributes include such things as:
 - Whether or not it is required or optional.
 - Is it's value unique, meaning that the database is allowed to contain only one document with that value in that property.
 
-A model is constructed from the schema and each class defines a document the application 
-will be operating on. In other words, a models is a classesclass that defines a document 
-with the properties and behaviors as declared in our schema.
+A model is generated from the schema and  defines a document the application 
+will operating on. More precisely, a model is a class that defines a document 
+with the properties and behaviors as declared in our schema. All database operations
+performed on a document using Mongoose must reference a model.
 
-### A Simple MongoDB-only Application
+
 
 ### A Simple Mongoose Equivalent Application
+
+```
+// File name: mongotests.js
+// Date: 03/04/2017
+// Programmer: Jim Medlock
+//
+// Routes containing native Mongo tests.
+
+const config = require('../config');
+const express = require('express');
+const mongodb = require('mongodb');
+const router = express.Router();
+
+const hlog = require('../util/htmllog');
+
+// Establish a mongo connection using settings from the config.js file
+const mongoUri = `mongodb://${config.db.host}/${config.db.name}`;
+const mongoClient = mongodb.MongoClient;
+
+// -------------------------------------------------------------
+// Express Route Definitions
+// -------------------------------------------------------------
+
+// Route - Retrieve all database rows using Mongo.
+//         http://localhost:3000/mongo/findall
+router.get('/findall', (request, response) => {
+  const log = new hlog.HtmlLog();
+  let accountsDb = null;
+  let collection = null;
+  log.addEntry('<h2>Mongo Test</h2>');
+  log.addEntry('<h3>Execution Log:</h3>');
+  log.addEntry('Entered /mongo/findall...');
+  mongoClient.connect(mongoUri)
+  .then((db) => {
+    accountsDb = db;
+    collection = accountsDb.collection('accounts');
+    log.addEntry('Successfully connected to MongoDB');
+    return collection.count();
+  })
+  .then((count) => {
+    log.addEntry(`Existing record count: ${count}`);
+     return collection.find();
+  })
+  .then((cursor) => {
+    cursor.each((error, anAccount) => {
+      if (anAccount == null) {
+        log.writeLog('normal', response);
+        return;
+      }
+      log.addEntry(`Account: account_no:${anAccount.account_no} 
+        owner_fname:${anAccount.owner_fname} 
+        owner_mi:${anAccount.owner_mi} 
+        owner_lname:${anAccount.owner_lname}`);
+    });
+  })
+  .catch((error) => {
+    log.addEntry(`Unable to establish connection to MongoDB. Error: ${error}`);
+    log.addEntry(`MongoUri: ${mongoUri}`);
+    log.writeLog('error', response);
+  });
+});
+
+module.exports = router;
+```
