@@ -37,7 +37,46 @@ router.get('/findall', (request, response) => {
   })
   .then((count) => {
     log.addEntry(`Existing record count: ${count}`);
-     return collection.find();
+    return collection.find();
+  })
+  .then((cursor) => {
+    cursor.each((error, anAccount) => {
+      if (anAccount == null) {
+        log.writeLog('normal', response);
+        return;
+      }
+      log.addEntry(`Account: account_no:${anAccount.account_no} 
+        owner_fname:${anAccount.owner_fname} 
+        owner_mi:${anAccount.owner_mi} 
+        owner_lname:${anAccount.owner_lname}`);
+    });
+  })
+  .catch((error) => {
+    log.addEntry(`Unable to establish connection to MongoDB. Error: ${error}`);
+    log.addEntry(`MongoUri: ${mongoUri}`);
+    log.writeLog('error', response);
+  });
+});
+
+// Route - Retrieve all database rows using Mongo.
+//         http://localhost:3000/mongo/findquery
+router.get('/findquery', (request, response) => {
+  const log = new hlog.HtmlLog();
+  let accountsDb = null;
+  let collection = null;
+  log.addEntry('<h2>Mongo Test</h2>');
+  log.addEntry('<h3>Execution Log:</h3>');
+  log.addEntry('Entered /mongo/findquery...');
+  mongoClient.connect(mongoUri)
+  .then((db) => {
+    accountsDb = db;
+    collection = accountsDb.collection('accounts');
+    log.addEntry('Successfully connected to MongoDB');
+    return collection.count();
+  })
+  .then((count) => {
+    log.addEntry(`Existing record count: ${count}`);
+    return collection.find({ owner_fname: 'Roger' });
   })
   .then((cursor) => {
     cursor.each((error, anAccount) => {
