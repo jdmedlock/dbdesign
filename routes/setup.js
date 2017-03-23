@@ -24,11 +24,14 @@ const mongoClient = mongodb.MongoClient;
 //         before reloading.
 //         http://localhost:3000/setup/populatedb
 router.get('/populatedb', (request, response) => {
-  const log = new hlog.HtmlLog();
-  log.addEntry('<h2>Initialize and Populate Test Database</h2>');
-  log.addEntry('<h3>Execution Log:</h3>');
-  log.addEntry('Entered /populatedb...');
   const testData = [{
+    account_no: 111110,
+    owner_fname: 'Roger',
+    owner_mi: 'A',
+    owner_lname: 'Zelinski',
+    created_on: new Date(),
+    updated_on: new Date(),
+  }, {
     account_no: 111111,
     owner_fname: 'John',
     owner_mi: 'Q',
@@ -49,7 +52,11 @@ router.get('/populatedb', (request, response) => {
     owner_lname: 'Johnsen',
     created_on: new Date(),
     updated_on: new Date(),
- }];
+  }];
+  const log = new hlog.HtmlLog();
+  log.addEntry('<h2>Initialize and Populate Test Database</h2>');
+  log.addEntry('<h3>Execution Log:</h3>');
+  log.addEntry('Entered /populatedb...');
   mongoClient.connect(mongoUri)
   .then((db) => {
     log.addEntry('Successfully connected to MongoDB');
@@ -63,8 +70,8 @@ router.get('/populatedb', (request, response) => {
       log.addEntry(`Records successfully removed. ${removeResult}`);
       return collection.insertMany(testData);
     })
-    .then((insertResult) => {
-      log.addEntry(`Record successfully inserted. ${insertResult}`);
+    .then(() => {
+      log.addEntry('Records successfully inserted.');
       log.writeLog('normal', response, 'Database successfully initialized and loaded');
     })
     .catch((error) => {

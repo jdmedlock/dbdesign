@@ -19,7 +19,7 @@ const mongoClient = mongodb.MongoClient;
 // Express Route Definitions
 // -------------------------------------------------------------
 
-// Route - Retrieve all database rows using Mongo.
+// Route - Retrieve all documents from the database.
 //         http://localhost:3000/mongo/findall
 router.get('/findall', (request, response) => {
   const log = new hlog.HtmlLog();
@@ -58,7 +58,7 @@ router.get('/findall', (request, response) => {
   });
 });
 
-// Route - Retrieve all database rows using Mongo.
+// Route - Retrieve specific documents from the database.
 //         http://localhost:3000/mongo/findquery
 router.get('/findquery', (request, response) => {
   const log = new hlog.HtmlLog();
