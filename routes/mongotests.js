@@ -41,7 +41,7 @@ router.get('/findall', (request, response) => {
   })
   .then((cursor) => {
     cursor.each((error, anAccount) => {
-      if (anAccount == null) {
+      if (anAccount === null) {
         log.writeLog('normal', response, 'Findall test successfully completed.');
         return;
       }
@@ -59,14 +59,14 @@ router.get('/findall', (request, response) => {
 });
 
 // Route - Retrieve specific documents from the database.
-//         http://localhost:3000/mongo/findquery
-router.get('/findquery', (request, response) => {
+//         http://localhost:3000/mongo/simplequery
+router.get('/simplequery', (request, response) => {
   const log = new hlog.HtmlLog();
   let accountsDb = null;
   let collection = null;
   log.addEntry('<h2>Mongo Test</h2>');
   log.addEntry('<h3>Execution Log:</h3>');
-  log.addEntry('Entered /mongo/findquery...');
+  log.addEntry('Entered /mongo/simplequery...');
   mongoClient.connect(mongoUri)
   .then((db) => {
     accountsDb = db;
@@ -80,8 +80,8 @@ router.get('/findquery', (request, response) => {
   })
   .then((cursor) => {
     cursor.each((error, anAccount) => {
-      if (anAccount == null) {
-        log.writeLog('normal', response, 'Findquery test successfully completed');
+      if (anAccount === null) {
+        log.writeLog('normal', response, 'Simplequery test successfully completed');
         return;
       }
       log.addEntry(`Account: account_no:${anAccount.account_no} 

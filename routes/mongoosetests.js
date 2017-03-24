@@ -53,12 +53,12 @@ router.get('/findall', (request, response) => {
 });
 
 // Route - Retrieve specific documents from the database.
-//         http://localhost:3000/mongoose/findquery
-router.get('/findquery', (request, response) => {
+//         http://localhost:3000/mongoose/simplequery
+router.get('/simplequery', (request, response) => {
   const log = new hlog.HtmlLog();
   log.addEntry('<h2>Mongoose Test</h2>');
   log.addEntry('<h3>Execution Log:</h3>');
-  log.addEntry('Entered /mongoose/findquery...');
+  log.addEntry('Entered /mongoose/simplequery...');
   mongoose.Promise = global.Promise;
   mongoose.connect(mongoUri)
   .then(() => {
@@ -75,7 +75,7 @@ router.get('/findquery', (request, response) => {
           owner_lname:${anAccount.owner_lname}`);
       });
       mongoose.disconnect();
-      log.writeLog('normal', response, 'Findquery test successfully completed');
+      log.writeLog('normal', response, 'simplequery test successfully completed');
     })
     .catch((error) => {
       log.addEntry(`Error encountered retrieving all accounts. Error: ${error}`);

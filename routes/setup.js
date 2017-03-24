@@ -22,8 +22,8 @@ const mongoClient = mongodb.MongoClient;
 
 // Route - Populate the database. If it already contains data clear it
 //         before reloading.
-//         http://localhost:3000/setup/populatedb
-router.get('/populatedb', (request, response) => {
+//         http://localhost:3000/setup/initializedb
+router.get('/initializedb', (request, response) => {
   const testData = [{
     account_no: 111110,
     owner_fname: 'Roger',
@@ -56,7 +56,7 @@ router.get('/populatedb', (request, response) => {
   const log = new hlog.HtmlLog();
   log.addEntry('<h2>Initialize and Populate Test Database</h2>');
   log.addEntry('<h3>Execution Log:</h3>');
-  log.addEntry('Entered /populatedb...');
+  log.addEntry('Entered /initializedb...');
   mongoClient.connect(mongoUri)
   .then((db) => {
     log.addEntry('Successfully connected to MongoDB');
