@@ -72,10 +72,12 @@ router.get('/initializedb', (request, response) => {
     })
     .then(() => {
       log.addEntry('Records successfully inserted.');
-      log.writeLog('normal', response, 'Database successfully initialized and loaded');
+      log.addEntry('Database successfully initialized and loaded');
+      db.close();
+      log.writeLog('normal', response, 'MongoDB connection closed');
     })
     .catch((error) => {
-      log.addEntry(`Error initializing and reloading test data. Error:${error}`);
+      log.addEntry(`Error initializing and reloading test data. Error: ${error}`);
       log.writeLog('error', response);
     });
   })

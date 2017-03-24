@@ -50,6 +50,7 @@ router.get('/findall', (request, response) => {
         owner_mi:${anAccount.owner_mi} 
         owner_lname:${anAccount.owner_lname}`);
     });
+    mongoClient.close();
   })
   .catch((error) => {
     log.addEntry(`Unable to establish connection to MongoDB. Error: ${error}`);
@@ -89,6 +90,7 @@ router.get('/simplequery', (request, response) => {
         owner_mi:${anAccount.owner_mi} 
         owner_lname:${anAccount.owner_lname}`);
     });
+    mongoClient.close();
   })
   .catch((error) => {
     log.addEntry(`Unable to establish connection to MongoDB. Error: ${error}`);

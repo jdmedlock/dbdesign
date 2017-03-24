@@ -13,28 +13,48 @@ class HtmlLog {
   constructor() {
     this.logEntries = [];
   }
-  // Add a new entry to the running log of program events.
-  // Prefix each log entry with the current date and time. If the
-  // logEntry contains a <h2> or an <h3> HTML tag suppress adding the 
-  // timestamp to the log entry.
-  // Returns: N/a
+
+  /**
+   * @description Add a new entry to the running log of program events.
+   * Prefix each log entry with the current date and time. If the
+   * logEntry contains a <h2> or an <h3> HTML tag suppress adding the
+   * timestamp to the log entry.
+   *
+   * @param {any} logEntry
+   *
+   * @memberOf HtmlLog
+   */
   addEntry(logEntry) {
-    if (logEntry.indexOf('<h2>') >= 0 || logEntry.indexOf('<h3>') >= 0 ) {
+    if (logEntry.indexOf('<h2>') >= 0 || logEntry.indexOf('<h3>') >= 0) {
       this.logEntries.push(`${logEntry}`);
     } else {
       this.logEntries.push(`<li>${this.createTimestamp()}: ${logEntry}</li>`);
     }
   }
-  // Generate a timestamp for the current point in timestamp
-  // Returns: String containing the timestamp
+
+  /**
+   * @description Generate a timestamp for the current point in time
+   *
+   * @returns {String} The timestamp for the current date and time
+   *
+   * @memberOf HtmlLog
+   */
   createTimestamp() {
     return moment().format('MM/DD/YY HH:mm:ss.SSS');
   }
-  // Write the log to the response object as an HTML list.
-  // Returns: N/a
+
+  /**
+   * @description Write the log to the response object as an HTML list.
+   *
+   * @param {any} emitType
+   * @param {any} response
+   * @param {any} logEntry
+   *
+   * @memberOf HtmlLog
+   */
   writeLog(emitType, response, logEntry) {
     let logMessage = '';
-    logMessage = logEntry !== null ? logEntry : '';
+    logMessage = logEntry !== undefined ? logEntry : '';
     if (emitType === 'normal') {
       response.writeHead(200, { 'Content-Type': 'text/html' });
     } else {
