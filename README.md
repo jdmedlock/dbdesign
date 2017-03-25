@@ -114,7 +114,33 @@ For example, using the Account example above all Transactions for account
 
 ### MongoDB Application Structure
 
+MongoDB applications consist of the three basic components:
 
+1. Establish a connection to a MongoDB instance
+
+```
+// Establish a mongo connection using settings from the config.js file
+const mongoUri = `mongodb://${config.db.host}/${config.db.name}`;
+const mongoClient = mongodb.MongoClient;
+```
+
+The contents of the config.js file are:
+
+```
+let config = {};
+config.db = {};
+
+// Create properties on the config.db object for the host and database names
+config.db.host = 'localhost:27017';
+config.db.name = 'account';
+
+module.exports = config;
+```
+
+2. Logic to access and manipulate database data
+3. Close the connection to the MongoDB instance 
+
+[MongoDB Application](https://gist.github.com/jdmedlock/2a90b7079ecc4e821e048b8aa5ed76b1#file-gistfile1-txt)
 
 ## What is Mongoose?
 
