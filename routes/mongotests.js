@@ -42,7 +42,7 @@ router.get('/findall', (request, response) => {
   .then((cursor) => {
     cursor.each((error, anAccount) => {
       if (anAccount === null) {
-        log.writeLog('normal', response, 'Findall test successfully completed.');
+        log.writeLog('normal', response, 'Findall test successfully completed');
         return;
       }
       log.addEntry(`Account: account_no:${anAccount.account_no} 
@@ -50,7 +50,7 @@ router.get('/findall', (request, response) => {
         owner_mi:${anAccount.owner_mi} 
         owner_lname:${anAccount.owner_lname}`);
     });
-    mongoClient.close();
+    accountsDb.close();
   })
   .catch((error) => {
     log.addEntry(`Unable to establish connection to MongoDB. Error: ${error}`);
@@ -90,7 +90,7 @@ router.get('/simplequery', (request, response) => {
         owner_mi:${anAccount.owner_mi} 
         owner_lname:${anAccount.owner_lname}`);
     });
-    mongoClient.close();
+    accountsDb.close();
   })
   .catch((error) => {
     log.addEntry(`Unable to establish connection to MongoDB. Error: ${error}`);
