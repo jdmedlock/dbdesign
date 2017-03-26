@@ -298,6 +298,22 @@ to objects in the program. Besides MongooseJS there are several other ODM's
 that have been developed for MongoDB including [Doctrine](https://github.com/doctrine),
 [MongoLink](http://mongolink.org/), and [Mandango](https://mandango.org/).
 
+The three main advantages of using Mongoose versus native MongoDB are:
+
+1. MongooseJS provides an abstraction layer on top of MongoDB that eliminates the
+need to use named collections. 
+2. Models in Mongoose perform the bulk of the work of establishing up default values for
+document properties and validating data. 
+3. Functions may be attached to Models in MongooseJS. This allows for seamless 
+incorporation of new functionality.
+
+The net result of these is the simplification of database access from applications.
+
+The main disadvantage of Mongoose is that abstraction comes at the cost of [performance](https://codeandcodes.com/tag/mongoose-vs-mongodb-native/)
+compared to that of native MongoDB.
+
+### Mongoose Concepts
+
 Mongoose uses schemas to model the data an application
 wishes to store and manipulate in MongoDb. This includes features such as 
 type casting, validation, query building, and more.
