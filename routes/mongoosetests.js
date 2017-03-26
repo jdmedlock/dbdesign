@@ -52,7 +52,7 @@ router.get('/findall', (request, response) => {
   });
 });
 
-// Route - Retrieve specific documents from the database.
+// Route - Retrieve specific documents from the database using a simple quesry.
 //         http://localhost:3000/mongoose/simplequery
 router.get('/simplequery', (request, response) => {
   const log = new hlog.HtmlLog();

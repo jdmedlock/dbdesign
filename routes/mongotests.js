@@ -59,7 +59,7 @@ router.get('/findall', (request, response) => {
   });
 });
 
-// Route - Retrieve specific documents from the database.
+// Route - Retrieve specific documents from the database via a complex query.
 //         http://localhost:3000/mongo/simplequery
 router.get('/simplequery', (request, response) => {
   const log = new hlog.HtmlLog();
@@ -82,7 +82,8 @@ router.get('/simplequery', (request, response) => {
   .then((cursor) => {
     cursor.each((error, anAccount) => {
       if (anAccount === null) {
-        log.writeLog('normal', response, 'Simplequery test successfully completed');
+        log.writeLog('normal', response, 
+          'Simplequery test successfully completed');
         return;
       }
       log.addEntry(`Account: account_no:${anAccount.account_no} 
