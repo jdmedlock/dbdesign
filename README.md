@@ -83,8 +83,8 @@ was easy to scale.
 
 ## What is MongoDB?
 
-[MongoDB](https://www.mongodb.com/) is a Open Source, NoSQL database management 
-system that supports:
+[MongoDB](https://www.mongodb.com/) is an Open Source, NoSQL database management 
+system that contains the following features:
 
 - Ad hoc queries
 - Indexing
@@ -250,33 +250,82 @@ understand and maintain as the number of levels increase.
 Promises help to eliminating the "nest", which serves to simplify the code making it easier 
 to ready and thus easier to maintain. The way this works is the logic in the ```.then()```
 is executed only when the associated Promise has been resolved. Conversely, the ```.catch()```
-is executed only if the Promise was rejected. In other words, and error occured.
+is executed only if the Promise was rejected. In other words, if an error was detected.
 
 #### Close the connection to the MongoDB instance 
 
-[MongoDB Application](https://gist.github.com/jdmedlock/2a90b7079ecc4e821e048b8aa5ed76b1#file-gistfile1-txt)
+After when the application has completed its goal and no more data is to be retrieved from 
+the MongoDB it's a good practice to gracefully terminate the connection to the MongoDB 
+instance. This is accomplished by closing the connection. In the example above this is
+done by calling the ```accountsDb.close()``` function to stop the connection and free up
+any resources devoted to it.
+
+```
+    ...
+  mongoClient.connect(mongoUri)
+  .then((db) => {
+    accountsDb = db;
+    ...
+  })
+  .then((count) => {
+    ...
+  })
+  .then((cursor) => {
+    ...
+    accountsDb.close();
+  })
+  .catch((err) => {
+    ...
+  });
+```
+
+You may have noticed that in the first ```.then(db)``` function the value of 
+```db``` was saved to a variable called ```accountDb```. This was done in 
+anticipation of it being needed later in the application logic to close the 
+connection. This was necessary since the scope of ```db``` is limited to that
+first ```.then(db)``` function.
+
+One additional consideration is there are cases where you may not want to 
+close the connection. Since opening and closing connections are relatively
+expensive high volume applications might want to use [connection pooling](https://blog.mlab.com/2013/11/deep-dive-into-connection-pooling/) to 
+reuse connections rather than continually opening and closing new ones.
 
 ## What is Mongoose?
 
-MongooseJS is an *Object Document Mapper (ODM)* that makes MongoDB easier to
-use from Javascript applications by translating documents in a MongoDB database
-to objects in the program. Mongoose uses schemas to model the data an application
+MongooseJS is an [Object Document Mapper (ODM)](https://dzone.com/articles/era-object-document-mapping) 
+that makes using MongoDB easiser by translating documents in a MongoDB database
+to objects in the program. Besides MongooseJS there are several other ODM's
+that have been developed for MongoDB including [Doctrine](https://github.com/doctrine),
+[MongoLink](http://mongolink.org/), and [Mandango](https://mandango.org/).
+
+Mongoose uses schemas to model the data an application
 wishes to store and manipulate in MongoDb. This includes features such as 
 type casting, validation, query building, and more.
 
-The schema describes the attributes of the properties (aka fields) the application will 
+The *schema* describes the attributes of the properties (aka fields) the application will 
 manipulate. These attributes include such things as:
 
 - Data type (e.g. String, Number, etc.).
 - Whether or not it is required or optional.
-- Is it's value unique, meaning that the database is allowed to contain only one document with that value in that property.
+- Is it's value unique, meaning that the database is allowed to contain only one 
+document with that value in that property.
 
-A model is generated from the schema and  defines a document the application 
+A *model* is generated from the schema and  defines a document the application 
 will operating on. More precisely, a model is a class that defines a document 
 with the properties and behaviors as declared in our schema. All database operations
 performed on a document using Mongoose must reference a model.
 
 
 
-### A Simple Mongoose Equivalent Application
+### A Simple Mongoose Application
+
+## Conclusion
+
+All of the sample code used in this article can be found
+on [GitHub](https://github.com/jdmedlock/dbdesign).
+
+I hope this information useful and I also look forward to any questions and comments you
+might have. If you like this article, please hit the 💚 button below, Tweet, and 
+share the post with your friends. Remember to follow me on Medium to get notified about 
+my future posts.
 
