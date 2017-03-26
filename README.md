@@ -117,8 +117,12 @@ For example, using the Account example above all Transactions for account
 MongoDB applications consist of the three basic components:
 
 1. Establish a connection to a MongoDB instance
+2. Logic to access and manipulate database data
+3. Close the connection to the MongoDB instance
 
-   Before any requests can be made to MongoDB a connection must first be
+#### Establish a connection to a MongoDB instance
+
+Before any requests can be made to MongoDB a connection must first be
 created. Establishing a connection is similar to placing a telephone
 call in that you need the "phone number" of the MongoDB instance and
 database the application is to interact with. This "phone number"
@@ -127,20 +131,20 @@ is made up of the following:
    - Host name of the MongoDB instance
    - Database name
 
-   In addition to the "phone number" the following connection parameters 
+In addition to the "phone number" the following connection parameters 
 may also be specified.
 
    - User id and password
    - Options
 
-   The host name and database name are required, but the remaining 
+The host name and database name are required, but the remaining 
 connection parameters are optional. For simplicity the examples that
 follow use only the host and database names. However, in a production
 environment you will always want to secure database access by 
 requiring that users and applications authenticate by specifying an
 authorized user id and password.
 
-   Since database access is typically distributed across more than one
+Since database access is typically distributed across more than one
 source file in an application a best practice is to isolate the 
 host and database names into a `config.js` file that is shared across
 all application components. The advantage of this is that altering 
@@ -148,7 +152,7 @@ either or both of these only requires an update to the `config.js`
 file rather than to each application source file that requires a
 connection.
 
-   The contents of the `config.js` file are:
+The contents of the `config.js` file are:
 
 ```
 let config = {};
@@ -161,7 +165,7 @@ config.db.name = 'account';
 module.exports = config;
 ```
 
-  To establish a MongoDB connection using the properties in the `config.js` file 
+To establish a MongoDB connection using the properties in the `config.js` file 
 a `require` must be issued to allow the properties in it to be referenced from 
 within the source file creating the connection. These properties are then used
 to create the URI connection string and a [MongoClient](http://mongodb.github.io/node-mongodb-native/2.2/api/MongoClient.html) reference 
@@ -186,22 +190,22 @@ mongoClient.connect(mongoUri)
   });
 ```
 
-2. Logic to access and manipulate database data
+#### Logic to access and manipulate database data
 
-   Once a connection has been established the application is ready to access and
+Once a connection has been established the application is ready to access and
 manipulate documents in the database. The first step in this process is to define
 the document collection within the database. This is conceptually similar to a 
 table in a relational database (RDBMS). Unlike tables in an RDBMS whose rows all
 have a the same format a collection can contain different types of documents, each
 having a different format.
 
-   In our example the collection is created by the function call: 
+In our example the collection is created by the function call: 
 
 ```collection = accountsDb.collection('accounts');``` 
 
    which defines a reference to the collection ```accounts```.  
 
-   Once the collection is created it can be used to invoke MongoDB 
+Once the collection is created it can be used to invoke MongoDB 
 function calls to access documents in the database. For example, 
 ```collection.count()``` returns the number of documents in the collection.
 
@@ -229,14 +233,26 @@ function calls to access documents in the database. For example,
         owner_mi:${anAccount.owner_mi} 
         owner_lname:${anAccount.owner_lname}`);
     });
-    accountsDb.close();
+    ...
   })
   .catch((err) => {
     ...
   });
 ```
 
-3. Close the connection to the MongoDB instance 
+It's important to make note of the fact that instead of using callbacks in our MongoDB
+function calls we are instead using Javascript [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+This has been done to avoid falling into the ["callback Hell"](http://callbackhell.com/)
+that can result from nested callbacks. The main attribute of "callback Hell" is the source 
+code takes on a pyramidial shape and the impact is it becomes increasingly difficult to
+understand and maintain as the number of levels increase.
+
+Promises help to eliminating the "nest", which serves to simplify the code making it easier 
+to ready and thus easier to maintain. The way this works is the logic in the ```.then()```
+is executed only when the associated Promise has been resolved. Conversely, the ```.catch()```
+is executed only if the Promise was rejected. In other words, and error occured.
+
+#### Close the connection to the MongoDB instance 
 
 [MongoDB Application](https://gist.github.com/jdmedlock/2a90b7079ecc4e821e048b8aa5ed76b1#file-gistfile1-txt)
 
