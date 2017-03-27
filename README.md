@@ -306,6 +306,8 @@ need to use named collections.
 document properties and validating data. 
 3. Functions may be attached to Models in MongooseJS. This allows for seamless 
 incorporation of new functionality.
+4. Queries use function chaining rather than embedded mnemonics which result in code
+that is more flexible and readable, therefore more maintainable as well.
 
 The net result of these is the simplification of database access from applications.
 
@@ -331,9 +333,125 @@ will operating on. More precisely, a model is a class that defines a document
 with the properties and behaviors as declared in our schema. All database operations
 performed on a document using Mongoose must reference a model.
 
+### How Does Mongoose Code Differ from MongoDB?
 
+The first difference between a Mongoose and a native-MongoDB application is that 
+a module containing the schema and model must be created in the `models` directory.
 
-### A Simple Mongoose Application
+The schema definition is quite interesting and useful since it can specify attributes
+of each property. Attributes include specifications such as the properties data type,
+whether it is required or optional on an insert or update, and whether its value is
+unique or not.
+
+A best practice is for this file to have the same name as the model. The first 
+character of this file is in uppercase since a model is a class built from the 
+schema. Like any class it's first character should therefore be an uppercase
+letter.
+
+For our example the following file, `Account.js`, contains the Mongoose schema and 
+model definitions.
+
+```
+// Mongoose schema and model definitions
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+// Create the schema for the Account database
+const accountSchema = new Schema({
+  account_no: { type: Number, required: true, unique: true },
+  owner_fname: { type: String, required: true, unique: false },
+  owner_mi: { type: String, required: true, unique: false },
+  owner_lname: { type: String, required: true, unique: false },
+  created_on: { type: Date, required: false, unique: false },
+  updated_on: { type: Date, required: false, unique: false },
+});
+
+// Create a model for the schema
+const Account = mongoose.model('Account', accountSchema);
+
+module.exports = Account;
+```
+
+The second major difference, although arguably relative to each developer, is that queries 
+are easier to construct and read in Mongoose than in native-MongoDb. MongoDB queries are 
+consist of structured BSON specifying document property names, 
+[operators](https://docs.mongodb.com/manual/reference/operator/query/), and values, which 
+together specify how documents are to be filtered.
+
+MongoDB provides a rich set of query operators which fall into one of the following high 
+level categories:
+
+- Comparison operators
+- Logical operators
+- Element operators
+- Evaluation operators
+- Geospacial operators
+- Array operators
+- Bitwise operators
+- Projection operators 
+
+An example of a MongoDB query that selects documents where the `owner_fname` is equal ("$eq")
+to a value of "Roger" is shown below.
+
+```
+collection.find({ owner_fname: { $eq: 'Roger' } });
+```
+
+Compare this to Mongoose which uses the combination of functions and function chaining, rather 
+than operators to filter documents. Although longer than its MongoDB equivalent the Mongoose
+version of the query is clearer to the reader and can end up being shorter as queries become
+more complex and more properties are required in the BSON. 
+
+```
+const query = Account.find({})
+  .where('owner_fname').equals('Roger');
+query.exec();
+```
+
+A line-by-line comparison of the code for a native-MongoDB program and its Mongoose equivalent 
+is shown below.
+
+```
+MongoDB Application Code                                        Mongoose Application Code
+...                                                           | ...
+                                                              | mongoose.Promise = global.Promise;
+mongoClient.connect(mongoUri)                                 | mongoose.connect(mongoUri)
+.then((db) => {                                               | .then(() => {
+  return collection.find({ owner_fname: { $eq: 'Roger' } });  |   const query = Account.find({})
+})                                                            |   .where('owner_fname').equals('Roger')
+.then((cursor) => {                                           |   
+  return cursor.sort({ owner_lname: 1 });                     |   .sort('owner_lname');
+})                                                            |   query.exec()
+.then((cursor) => {                                           |   .then((accounts) => {
+  cursor.each((error, anAccount) => {                         |     accounts.forEach((anAccount) => {
+    if (anAccount === null) {                                 |
+      log.writeLog('normal', response,                        |
+        'Simplequery test successfully completed');           |
+      return;                                                 |
+    }                                                         |
+    log.addEntry(`Account: account_no:${anAccount.account_no} |      log.addEntry(`Account: account_no:${anAccount.account_no} 
+      owner_fname:${anAccount.owner_fname}                    |        owner_fname:${anAccount.owner_fname}
+      owner_mi:${anAccount.owner_mi}                          |        owner_mi:${anAccount.owner_mi}
+      owner_lname:${anAccount.owner_lname}                    |        owner_lname:${anAccount.owner_lname}
+      created_on:${anAccount.created_on}                      |        created_on:${anAccount.created_on}
+      updated_on:${anAccount.updated_on}`);                   |        updated_on:${anAccount.updated_on}`);
+  });                                                         |   });
+                                                      mongoose.disconnect();
+                                                      log.writeLog('normal', response, 'simplequery test successfully completed');
+                                                    })
+                                                    .catch((error) => {
+                                                      log.addEntry(`Error encountered retrieving all accounts. Error: ${error}`);
+                                                      log.writeLog('error', response);
+                                                      mongoose.disconnect();
+                                                    });
+                                                  })
+                                                  .catch((error) => {
+                                                    log.addEntry(`Error encountered establishing connection. Error: ${error}`);
+                                                    log.writeLog('error', response);
+                                                  });
+  ...
+```
 
 ## Conclusion
 
@@ -342,6 +460,7 @@ on [GitHub](https://github.com/jdmedlock/dbdesign).
 
 I hope this information useful and I also look forward to any questions and comments you
 might have. If you like this article, please hit the 💚 button below, Tweet, and 
-share the post with your friends. Remember to follow me on Medium to get notified about 
-my future posts.
+share the post with your friends. Remember to follow me on Medium to get notified when 
+new posts are published.
 
+Have a good day and do great things!
