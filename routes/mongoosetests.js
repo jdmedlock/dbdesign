@@ -59,10 +59,13 @@ router.get('/simplequery', (request, response) => {
   log.addEntry('<h2>Mongoose Test</h2>');
   log.addEntry('<h3>Execution Log:</h3>');
   log.addEntry('Entered /mongoose/simplequery...');
+  // Prior to Mongoose V4 the following was required to force use of JS Promises
   mongoose.Promise = global.Promise;
   mongoose.connect(mongoUri)
   .then(() => {
-    const query = Account.find({ owner_fname: 'Roger' });
+    const query = Account.find({})
+    .where('owner_fname').equals('Roger')
+    .sort('owner_lname');
     // If query.select is not specified all schema properties will be returned.
     // query.select('account_no owner_fname owner_mi owner_lname');
     query.exec()
@@ -72,7 +75,9 @@ router.get('/simplequery', (request, response) => {
         log.addEntry(`Account: account_no:${anAccount.account_no} 
           owner_fname:${anAccount.owner_fname} 
           owner_mi:${anAccount.owner_mi} 
-          owner_lname:${anAccount.owner_lname}`);
+          owner_lname:${anAccount.owner_lname}
+          created_on:${anAccount.created_on}
+          updated_on:${anAccount.updated_on}`);
       });
       mongoose.disconnect();
       log.writeLog('normal', response, 'simplequery test successfully completed');
