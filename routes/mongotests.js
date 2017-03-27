@@ -77,7 +77,10 @@ router.get('/simplequery', (request, response) => {
   })
   .then((count) => {
     log.addEntry(`Existing record count: ${count}`);
-    return collection.find({ owner_fname: 'Roger' });
+    return collection.find({ owner_fname: { $eq: 'Roger' } });
+  })
+  .then((cursor) => {
+    return cursor.sort({ owner_lname: 1 });
   })
   .then((cursor) => {
     cursor.each((error, anAccount) => {
