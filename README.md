@@ -414,42 +414,41 @@ is shown below.
 
 ```
 MongoDB Application Code                                        Mongoose Application Code
-...                                                           | ...
-                                                              | mongoose.Promise = global.Promise;
-mongoClient.connect(mongoUri)                                 | mongoose.connect(mongoUri)
-.then((db) => {                                               | .then(() => {
-  return collection.find({ owner_fname: { $eq: 'Roger' } });  |   const query = Account.find({})
-})                                                            |   .where('owner_fname').equals('Roger')
-.then((cursor) => {                                           |   
-  return cursor.sort({ owner_lname: 1 });                     |   .sort('owner_lname');
-})                                                            |   query.exec()
-.then((cursor) => {                                           |   .then((accounts) => {
-  cursor.each((error, anAccount) => {                         |     accounts.forEach((anAccount) => {
-    if (anAccount === null) {                                 |
-      log.writeLog('normal', response,                        |
-        'Simplequery test successfully completed');           |
-      return;                                                 |
-    }                                                         |
-    log.addEntry(`Account: account_no:${anAccount.account_no} |      log.addEntry(`Account: account_no:${anAccount.account_no} 
-      owner_fname:${anAccount.owner_fname}                    |        owner_fname:${anAccount.owner_fname}
-      owner_mi:${anAccount.owner_mi}                          |        owner_mi:${anAccount.owner_mi}
-      owner_lname:${anAccount.owner_lname}                    |        owner_lname:${anAccount.owner_lname}
-      created_on:${anAccount.created_on}                      |        created_on:${anAccount.created_on}
-      updated_on:${anAccount.updated_on}`);                   |        updated_on:${anAccount.updated_on}`);
-  });                                                         |   });
-                                                      mongoose.disconnect();
-                                                      log.writeLog('normal', response, 'simplequery test successfully completed');
-                                                    })
-                                                    .catch((error) => {
-                                                      log.addEntry(`Error encountered retrieving all accounts. Error: ${error}`);
-                                                      log.writeLog('error', response);
-                                                      mongoose.disconnect();
-                                                    });
-                                                  })
-                                                  .catch((error) => {
-                                                    log.addEntry(`Error encountered establishing connection. Error: ${error}`);
-                                                    log.writeLog('error', response);
-                                                  });
+...                                                  | ...
+                                                     | mongoose.Promise = global.Promise;
+mongoClient.connect(mongoUri)                        | mongoose.connect(mongoUri)
+.then((db) => {                                      | .then(() => {
+  return collection.find(                            |   const query = Account.find({})
+    { owner_fname: { $eq: 'Roger' } });
+})                                                   |   .where('owner_fname').equals('Roger')
+.then((cursor) => {                                  |   
+  return cursor.sort({ owner_lname: 1 });            |   .sort('owner_lname');
+})                                                   |   query.exec()
+.then((cursor) => {                                  |   .then((accounts) => {
+  cursor.each((error, anAccount) => {                |     accounts.forEach((anAccount) => {
+    if (anAccount === null) {                        |
+      log.writeLog('normal', response,               |
+        'Simplequery test successfully completed');  |
+      return;                                        |
+    }                                                |
+    log.addEntry(`Account: ${anAccount.account_no}   |       log.addEntry(`Account: ${anAccount.account_no}
+      owner_fname:${anAccount.owner_fname}           |         owner_fname:${anAccount.owner_fname}
+      owner_mi:${anAccount.owner_mi}                 |         owner_mi:${anAccount.owner_mi}
+      owner_lname:${anAccount.owner_lname}           |         owner_lname:${anAccount.owner_lname}
+      created_on:${anAccount.created_on}             |         created_on:${anAccount.created_on}
+      updated_on:${anAccount.updated_on}`);          |         updated_on:${anAccount.updated_on}`);
+  });                                                |     });
+  accountsDb.close();                                |     mongoose.disconnect();
+})                                                   |     log.writeLog('normal', response, 'simplequery test successfully completed');
+                                                     |   })
+                                                     |   .catch((error) => {
+                                                     |     // Handle document retrieval error
+                                                     |     mongoose.disconnect();
+                                                     |   });
+                                                     | })
+.catch((error) => {                                  | .catch((error) => {
+  // Handle connection error                         |   // Handle connection error
+});                                                  | });
   ...
 ```
 
