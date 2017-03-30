@@ -455,7 +455,7 @@ mongoClient.connect(mongoUri)                        | mongoose.connect(mongoUri
 ## Conclusion
 
 All of the sample code used in this article can be found
-on [GitHub](https://github.com/jdmedlock/dbdesign).
+on GitHub.
 
 I hope this information useful and I also look forward to any questions and comments you
 might have. If you like this article, please hit the 💚 button below, Tweet, and 
